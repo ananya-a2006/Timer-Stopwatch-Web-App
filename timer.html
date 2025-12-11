@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Timer & Stopwatch</title>
+<style>
+    body { 
+        font-family: Arial; 
+        text-align: center; 
+        padding-top: 40px; 
+        background: #f4f4f4; 
+    }
+    h2 { margin-bottom: 10px; }
+    .box {
+        background: white;
+        padding: 20px;
+        margin: 20px auto;
+        width: 280px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    button {
+        padding: 8px 12px;
+        margin: 5px;
+        border: none;
+        background: #007bff;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    button:hover { background: #0056b3; }
+    input {
+        padding: 8px;
+        width: 80px;
+        margin-top: 5px;
+        text-align: center;
+    }
+    .display {
+        font-size: 32px;
+        margin: 10px 0;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<!-- ---------------- STOPWATCH ---------------- -->
+<div class="box">
+    <h2>⏱ Stopwatch</h2>
+    <div id="swDisplay" class="display">00:00:00</div>
+    <button onclick="startSW()">Start</button>
+    <button onclick="stopSW()">Stop</button>
+    <button onclick="resetSW()">Reset</button>
+</div>
+
+<!-- ---------------- TIMER ---------------- -->
+<div class="box">
+    <h2>⏰ Timer</h2>
+    <input type="number" id="timerInput" placeholder="Seconds">
+    <div id="tDisplay" class="display">00:00</div>
+    <button onclick="startTimer()">Start</button>
+    <button onclick="resetTimer()">Reset</button>
+</div>
+
+<script>
+/* ---------------- STOPWATCH ---------------- */
+let sw_seconds = 0;
+let swInterval;
+
+function updateSW() {
+    sw_seconds++;
+    let hrs = String(Math.floor(sw_seconds / 3600)).padStart(2, '0');
+    let mins = String(Math.floor((sw_seconds % 3600) / 60)).padStart(2, '0');
+    let secs = String(sw_seconds % 60).padStart(2, '0');
+    document.getElementById("swDisplay").innerText = `${hrs}:${mins}:${secs}`;
+}
+
+function startSW() {
+    clearInterval(swInterval);
+    swInterval = setInterval(updateSW, 1000);
+}
+
+function stopSW() {
+    clearInterval(swInterval);
+}
+
+function resetSW() {
+    clearInterval(swInterval);
+    sw_seconds = 0;
+    document.getElementById("swDisplay").innerText = "00:00:00";
+}
+
+/* ---------------- TIMER ---------------- */
+let timer_seconds = 0;
+let timerInterval;
+
+function startTimer() {
+    let input = parseInt(document.getElementById("timerInput").value);
+    if (isNaN(input) || input <= 0) {
+        alert("Enter valid seconds!");
+        return;
+    }
+
+    timer_seconds = input;
+    updateTimer();
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        timer_seconds--;
+        updateTimer();
+        if (timer_seconds <= 0) {
+            clearInterval(timerInterval);
+            alert("⏰ Time's up!");
+        }
+    }, 1000);
+}
+
+function updateTimer() {
+    let mins = String(Math.floor(timer_seconds / 60)).padStart(2, '0');
+    let secs = String(timer_seconds % 60).padStart(2, '0');
+    document.getElementById("tDisplay").innerText = `${mins}:${secs}`;
+}
+
+function resetTimer() {
+    clearInterval(timerInterval);
+    timer_seconds = 0;
+    document.getElementById("tDisplay").innerText = "00:00";
+}
+</script>
+
+</body>
+</html>
